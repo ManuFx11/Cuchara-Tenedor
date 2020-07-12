@@ -6,6 +6,8 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 //Funcion para la creación de los elementos de las tabs del menú
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+//Importo Biblioteca Icon de React Native Element
+import {Icon} from 'react-native-elements';
 
 //Importo Componentes Stack de la Aplicación
 import RestaurantsStack from './RestaurantsStack';
@@ -15,13 +17,23 @@ import SearchStack from './SearchStack';
 import AccountStack from './AccountStack';
 
 
+
 //Creo un componente Tab
 const Tab = createBottomTabNavigator();
 
-function Navigation(){
+export default function Navigation(){
     return(
         <NavigationContainer>
-            <Tab.Navigator>
+            <Tab.Navigator
+                initialRouteName = "restaurant"
+                tabBarOptions = {{
+                    inactiveTintColor : "#646464",
+                    activeTintColor : "#FF8000"
+                }}
+                screenOptions={({ route }) => ({
+                    tabBarIcon: ({ focused, color, size }) =>  configIconsTabs(route,focused) ,
+                  })}
+            >       
                 <Tab.Screen name="restaurant" component={RestaurantsStack} options={{ title : 'Restaurantes'}}/>
                 <Tab.Screen name="top-restaurant" component={TopRestaurantStack} options={{ title : 'Top 5'}}/>
                 <Tab.Screen name="favorites" component={FavoritesStack} options={{title : 'Favoritos'}}/>
@@ -32,4 +44,32 @@ function Navigation(){
     )
 }
 
-export default Navigation;
+//Realizamos una funcion en la que configuramos los iconos para las distintas rutas
+
+function configIconsTabs(route,focused){
+    let iconName;
+    let color = "#9199AA";
+    iconName = focused ?  color = "#FF8000" : "#9199AA";
+    switch(route.name){
+        case  "restaurant":
+            iconName = "silverware";
+            break;
+        case "top-restaurant" : 
+            iconName = "numeric-5-box-outline"
+            break;
+        case "favorites" :
+            iconName = "heart-outline"
+            break;
+        case "search" : 
+            iconName = "magnify"
+            break;
+        case "account" : 
+            iconName = "account-outline"
+        default : 
+        break;
+    }
+
+    return(
+        <Icon type="material-community" name={iconName} color={color} />
+    )
+}

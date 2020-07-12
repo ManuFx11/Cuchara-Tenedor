@@ -17,3 +17,7 @@ yarn add @react-navigation/stack@~5.2.10
 
 //Para utilizar un menu de tab abajo debemos usar esto
 yarn add @react-navigation/bottom-tabs@~5.2.6
+
+// React Native Elements:  Es una biblioteca de componentes tipo Boostrap que nos dota de un manejo más facil.
+
+--> yarn add react-native-elements
