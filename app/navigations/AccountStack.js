@@ -1,7 +1,7 @@
 import React from 'react';
 import {createStackNavigation, createStackNavigator} from '@react-navigation/stack';
 
-import Account from '../views/Account';
+import Account from '../views/Account/Account';
 
 //Creo el Stack
 const Stack = createStackNavigator();

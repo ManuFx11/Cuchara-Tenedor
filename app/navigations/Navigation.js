@@ -10,12 +10,12 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Icon} from 'react-native-elements';
 
 //Importo Componentes Stack de la Aplicación
+//Stack es un conjunto de rutas englobadas.
 import RestaurantsStack from './RestaurantsStack';
 import FavoritesStack from './FavoritesStack';
 import TopRestaurantStack from './TopRestaurantStack';
 import SearchStack from './SearchStack';
 import AccountStack from './AccountStack';
-
 
 
 //Creo un componente Tab
@@ -25,11 +25,14 @@ export default function Navigation(){
     return(
         <NavigationContainer>
             <Tab.Navigator
+                //ruta inicial
                 initialRouteName = "restaurant"
+                //colores
                 tabBarOptions = {{
                     inactiveTintColor : "#646464",
                     activeTintColor : "#FF8000"
                 }}
+                //llamo a funcion configIconsTabs que configura los iconos
                 screenOptions={({ route }) => ({
                     tabBarIcon: ({ focused, color, size }) =>  configIconsTabs(route,focused) ,
                   })}
@@ -45,7 +48,7 @@ export default function Navigation(){
 }
 
 //Realizamos una funcion en la que configuramos los iconos para las distintas rutas
-
+//Esta funcion recibe la route y si esta pulsado (focused) hago un switch para otorgar a cada ruta un icono de react-native-element
 function configIconsTabs(route,focused){
     let iconName;
     let color = "#9199AA";

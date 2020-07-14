@@ -21,3 +21,9 @@ yarn add @react-navigation/bottom-tabs@~5.2.6
 // React Native Elements:  Es una biblioteca de componentes tipo Boostrap que nos dota de un manejo más facil.
 
 --> yarn add react-native-elements
+
+// Firebase
+
+Tenemos que crear un proyecto en Google Firebase y registrar la app, una vez realizado obtendremos el SDK.
+
+Instalamos el paquete firebase: yarn add firebase@~7.14.0
