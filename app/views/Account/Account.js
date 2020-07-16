@@ -1,6 +1,5 @@
 //Vista Account 
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text,View} from 'react-native';
 
 //Importo firebase
 import * as firebase from 'firebase';
@@ -28,12 +27,13 @@ export default function Account(){
 
     },[])
 
-    //Si login es igual a null significa que esta cargando.
-    if(login === null){
-        return <Text>Cargando..</Text>
-    }
+    //Si login es igual a null significa que esta cargando la pantalla por primera vez y saldra este alerta.
+     if(login === null){
+        return <Loading isVisible={true} text="Cargando.."/>
+    } 
 
     return login ? <UserLogged/> : <UserGuest/>;
+  
        
 }
 
