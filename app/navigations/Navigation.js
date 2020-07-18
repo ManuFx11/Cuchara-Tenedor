@@ -30,7 +30,7 @@ export default function Navigation(){
                 //colores
                 tabBarOptions = {{
                     inactiveTintColor : "#646464",
-                    activeTintColor : "#FF8000"
+                    activeTintColor : "#00a680"
                 }}
                 //llamo a funcion configIconsTabs que configura los iconos
                 screenOptions={({ route }) => ({
@@ -52,7 +52,7 @@ export default function Navigation(){
 function configIconsTabs(route,focused){
     let iconName;
     let color = "#9199AA";
-    iconName = focused ?  color = "#FF8000" : "#9199AA";
+    iconName = focused ?  color = "#00a680" : "#00a680";
     switch(route.name){
         case  "restaurant":
             iconName = "silverware";

@@ -26,4 +26,4 @@ yarn add @react-navigation/bottom-tabs@~5.2.6
 
 Tenemos que crear un proyecto en Google Firebase y registrar la app, una vez realizado obtendremos el SDK.
 
-Instalamos el paquete firebase: yarn add firebase@~7.14.0
+Instalamos el paquete firebase: yarn add firebase@~7.9.0
