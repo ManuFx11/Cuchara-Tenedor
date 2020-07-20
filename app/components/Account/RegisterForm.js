@@ -9,8 +9,10 @@ import {validarEmail} from '../../utils/validations';
 //Importo Loadash
 import {size, isEmpty} from 'lodash';
 
-export default function RegisterForm(){
+export default function RegisterForm(props){
 
+    //Recupero la referencia del toast
+    const {toastRef} = props;
 
     const [showPassword, setShowPassword] = useState(false);
     const [showRepeatPassword, setShowRepeatPassword] = useState(false);
@@ -23,22 +25,28 @@ export default function RegisterForm(){
           isEmpty(formData.repeatPassword)
         ) {
          console.log("Todos los campos son obligatorios");
+         toastRef.current.show("Todos los campos son obligatorios");
+         
         } else if (!validarEmail(formData.email)) {
           console.log("Email no correcto");
+          toastRef.current.show("Email no correcto");
         } else if (formData.password !== formData.repeatPassword) {
           console.log("Las contraseñas tienen que ser iguales");
+          toastRef.current.show("Las contraseñas tienen que ser iguales");
         } else if (size(formData.password) < 6) {
            console.log(
             "La contraseña tiene que tener al menos 6 caracteres"
           );
+          toastRef.current.show("La contraseña tiene que tener al menos 6 caracteres");
         } else {
           console.log("todo ok");
+          toastRef.current.show("Todo OK");
         }
       };
     
       const onChange = (e, type) => {
         let value = e.nativeEvent.text;
-        setFormData({ ...formData, [type]: e.nativeEvent.text });
+        setFormData({ ...formData, [type]: value });
       };
 
 
@@ -95,6 +103,22 @@ export default function RegisterForm(){
         </View>
     )
 }
+
+function createShowToast(text){
+
+ /*   let toast = Toast.show(text,{
+       duration: Toast.durations.LONG,
+       position:Toast.positions.BOTTOM,
+       shadow:true,
+       animation:true,
+       hideOnPress:true,
+       delay:0
+   })
+
+   return toast; */
+   return "";
+}
+
 
 //Creo el objeto del formulario se puede tambien mandar en su creación
 function defaultFormValue() {

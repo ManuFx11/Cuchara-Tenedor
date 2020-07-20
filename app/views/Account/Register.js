@@ -1,5 +1,5 @@
 //Pantalla de Registro
-import React from 'react';
+import React,{useRef} from 'react';
 import {StyleSheet, View, Text, Image, ScrollView} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
@@ -7,7 +7,14 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 //Importo el componente Formulario de Registro
 import RegisterForm from '../../components/Account/RegisterForm';
 
+//Importo Toast
+import Toast from 'react-native-easy-toast';
+
 export default function Register(){
+
+   //Creo una referencia hacia el elemento Toast de la vista
+    const toastRef = useRef();
+
     return(
         <KeyboardAwareScrollView>
             <Image
@@ -16,8 +23,9 @@ export default function Register(){
               resizeMode="contain"
             ></Image>
             <View style={styles.viewForm}>
-               <RegisterForm></RegisterForm>
+               <RegisterForm toastRef={toastRef}></RegisterForm>
             </View>
+            <Toast ref={toastRef} position="center" opacity={0.9}/>
         </KeyboardAwareScrollView>
     )
 }
