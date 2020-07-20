@@ -22,7 +22,7 @@ export default function RegisterForm(){
           isEmpty(formData.password) ||
           isEmpty(formData.repeatPassword)
         ) {
-          console.log("Debes rellenar todos los campos")
+         console.log("Todos los campos son obligatorios");
         } else if (!validarEmail(formData.email)) {
           console.log("Email no correcto");
         } else if (formData.password !== formData.repeatPassword) {
@@ -37,6 +37,7 @@ export default function RegisterForm(){
       };
     
       const onChange = (e, type) => {
+        let value = e.nativeEvent.text;
         setFormData({ ...formData, [type]: e.nativeEvent.text });
       };
 
@@ -44,14 +45,14 @@ export default function RegisterForm(){
     return(
         <View style={styles.formContainer}>
         <Input
-             placeholder="Correo electronico"
-             containerStyle={styles.inputForm}
-             onChange={(e) => onChange(e, "email")}
-             rightIcon={
-                    <Icon
-                    type="material-community"
-                    name="at"
-                    iconStyle={styles.iconRight}
+          placeholder="Email"
+          containerStyle={styles.inputForm}
+          onChange={(e) => onChange(e, "email")}
+          rightIcon={
+            <Icon
+             type="material-community"
+             name="at"
+             iconStyle={styles.iconRight}
             />
         }
       />
@@ -95,7 +96,7 @@ export default function RegisterForm(){
     )
 }
 
-
+//Creo el objeto del formulario se puede tambien mandar en su creación
 function defaultFormValue() {
     return {
       email: "",
