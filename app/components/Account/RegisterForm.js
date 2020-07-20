@@ -5,11 +5,20 @@ import {Input, Icon, Button} from 'react-native-elements';
 
 //Importo funcion validar email
 import {validarEmail} from '../../utils/validations';
+import {registerUser} from '../../utils/functions';
 
 //Importo Loadash
 import {size, isEmpty} from 'lodash';
 
+//Importo Hook de navegación useNavigation
+import {useNavigation} from '@react-navigation/native';
+
+//Importo Firebase
+import * as firebase from 'firebase';
+
 export default function RegisterForm(props){
+
+    const navigation = useNavigation();
 
     //Recupero la referencia del toast
     const {toastRef} = props;
@@ -39,8 +48,19 @@ export default function RegisterForm(props){
           );
           toastRef.current.show("La contraseña tiene que tener al menos 6 caracteres");
         } else {
-          console.log("todo ok");
-          toastRef.current.show("Todo OK");
+          toastRef.current.show("Registrando Usuario.... Espere");
+           //Registro al usuario
+          firebase.auth()
+                  .createUserWithEmailAndPassword(formData.email, formData.password)
+                  .then(response => {
+                    console.log(response);
+                    toastRef.current.show("Registro Completado");
+                    setTimeout(() => navigation.navigate("account"),1500)
+                  })
+                  .catch(error => {
+                    toastRef.current.show("Email ya registrado");
+                    console.log(error);
+                  }) 
         }
       };
     
@@ -103,22 +123,6 @@ export default function RegisterForm(props){
         </View>
     )
 }
-
-function createShowToast(text){
-
- /*   let toast = Toast.show(text,{
-       duration: Toast.durations.LONG,
-       position:Toast.positions.BOTTOM,
-       shadow:true,
-       animation:true,
-       hideOnPress:true,
-       delay:0
-   })
-
-   return toast; */
-   return "";
-}
-
 
 //Creo el objeto del formulario se puede tambien mandar en su creación
 function defaultFormValue() {

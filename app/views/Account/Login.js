@@ -1,12 +1,15 @@
 //Vista de Login de la Aplicación
 import React from 'react';
 import {StyleSheet, View, ScrollView, Text, Image} from 'react-native';
-import {Divider} from 'react-native-elements';
+import {Divider, Button} from 'react-native-elements';
 
 //Importo hook de navegacion
 import {useNavigation} from '@react-navigation/native';
 
+
 export default function Login(){
+
+
 
     return(
         <ScrollView centerContent={true}>
@@ -22,11 +25,30 @@ export default function Login(){
            <Divider style={styles.divider}/>
            <View style={styles.viewContainer}>
            <Text>Social Login</Text>
+           
+          
            </View>
           
         </ScrollView>
     )
 }
+
+/* function loginGoogle() {
+    //Creo un proveedor para usar el auth de Google + info en https://firebase.google.com/docs/auth/web/google-signin?hl=es
+    const provider = new firebase.auth.GoogleAuthProvider();
+    //Establezco el idioma del auth en español
+    firebase.auth().languageCode='es';
+    //Muestra el pop del login de google
+    firebase.auth().signInWithPopup(provider)
+    .then(result => {
+      //Obtenemos la info del usuario con result.user
+      console.log(result.user);
+      setInfo(result.user);
+    })
+    .catch(error => {
+      console.log(error.message);
+    })
+  } */
 
 //Para no cargar el login crear un component CreateAccount que solo usare de manera interna en este componente Login
 
