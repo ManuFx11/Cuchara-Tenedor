@@ -1,15 +1,21 @@
 //Vista de Login de la Aplicación
-import React from 'react';
+import React, {useRef} from 'react';
 import {StyleSheet, View, ScrollView, Text, Image} from 'react-native';
 import {Divider, Button} from 'react-native-elements';
 
-//Importo hook de navegacion
+//Import hook de navegacion
 import {useNavigation} from '@react-navigation/native';
+
+//Import LoginForm
+import LoginForm from '../../components/Account/LoginForm';
+
+//Import Toast
+import Toast from 'react-native-easy-toast'; 
 
 
 export default function Login(){
 
-
+   const refToast = useRef();
 
     return(
         <ScrollView centerContent={true}>
@@ -19,16 +25,14 @@ export default function Login(){
             style={styles.logo}
            ></Image>
            <View style={styles.viewContainer}>
-               <Text>Login Form</Text>
+               <LoginForm refToast={refToast}/>
               <CreateAccount/>
            </View>
            <Divider style={styles.divider}/>
            <View style={styles.viewContainer}>
            <Text>Social Login</Text>
-           
-          
            </View>
-          
+           <Toast ref={refToast} position="center" opacity={0.9}/>
         </ScrollView>
     )
 }

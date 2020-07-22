@@ -10,6 +10,10 @@ import {registerUser} from '../../utils/functions';
 //Importo Loadash
 import {size, isEmpty} from 'lodash';
 
+
+//Importo Loading
+import Loading from '../Loading';
+
 //Importo Hook de navegación useNavigation
 import {useNavigation} from '@react-navigation/native';
 
@@ -26,6 +30,7 @@ export default function RegisterForm(props){
     const [showPassword, setShowPassword] = useState(false);
     const [showRepeatPassword, setShowRepeatPassword] = useState(false);
     const [formData, setFormData] = useState(defaultFormValue());
+    const [loading, setLoading] = useState(false);
 
     const onSubmit = () => {
         if (
@@ -48,11 +53,13 @@ export default function RegisterForm(props){
           );
           toastRef.current.show("La contraseña tiene que tener al menos 6 caracteres");
         } else {
-          toastRef.current.show("Registrando Usuario.... Espere");
+          setLoading(true);
+          //toastRef.current.show("Registrando Usuario.... Espere");
            //Registro al usuario
           firebase.auth()
                   .createUserWithEmailAndPassword(formData.email, formData.password)
                   .then(response => {
+                    setLoading(false);
                     console.log(response);
                     toastRef.current.show("Registro Completado");
                     setTimeout(() => navigation.navigate("account"),1500)
@@ -64,10 +71,12 @@ export default function RegisterForm(props){
         }
       };
     
+
+      //Actualizo valores en cada change en el state
       const onChange = (e, type) => {
         let value = e.nativeEvent.text;
         setFormData({ ...formData, [type]: value });
-      };
+     };
 
 
     return(
@@ -120,6 +129,7 @@ export default function RegisterForm(props){
         buttonStyle={styles.btnRegister}
         onPress={onSubmit}
       />
+      <Loading isVisible={loading} text="Creando cuenta.."/>
         </View>
     )
 }
