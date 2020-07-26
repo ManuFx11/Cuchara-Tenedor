@@ -51,8 +51,8 @@ export default function LoginForm(props){
                 },1500);
             })
             .catch(error => {
-                console.log("Error");
-                console.log(error);
+                setIsVisible(false);
+                refToast.current.show("Credenciales no validas");
             })
         }   
     }
