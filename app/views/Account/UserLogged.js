@@ -30,13 +30,20 @@ export default function UserLogged(){
             const user = await firebase.auth().currentUser;
             //Actualizo el state del usuario
             setUserInfo(user);
+            console.log(userInfo);
          })();
 
-    },[])
+    },[userInfo])
 
     return(
         <View style={styles.viewUserInfo}>
-            {userInfo && <InfoUser userInfo={userInfo}/>}
+            {userInfo && <InfoUser 
+            userInfo={userInfo} 
+            toastRef={toastRef}
+            updateAvatarUser={updateAvatarUser}
+            setLoading={setIsVisibleLoading}
+            setLoadingText={setTextLoading}
+             />}
             <Text>Opciones de Cuenta</Text>
             <Button onPress={removeSession} 
                     title="Cerrar Sessión" 
@@ -50,7 +57,12 @@ export default function UserLogged(){
     )
 }
 
-
+//Funcion actualizar avatar del usuario
+const updateAvatarUser = () => {
+    const ref = firebase.storage().ref(`avatar/${userInfo.uid}`)
+    const url = ref.getDownloadURL();
+    console.log(`La url del avatar es ${url}`);
+}
 
 
 const styles = StyleSheet.create({

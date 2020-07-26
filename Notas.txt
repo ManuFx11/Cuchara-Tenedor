@@ -32,3 +32,24 @@ Instalamos el paquete firebase: yarn add firebase@~7.9.0
 
 https://lodash.com
 
+//Instalacion de permisos para acceder a funcionalidades movil
+
+Para ello instalaremos el siguiente paquete:
+
+Expo permissions  https://docs.expo.io/versions/latest/sdk/permissions/ --> yarn add expo-permissions
+
+Instalar paquete expo-image-picker
+
+Hay que añadir permisos para Android. Para ello nos vamos a app.json y ponemos android y estipulamos los permisos que vamos a usar:
+
+ "android" : {
+      "permissions" : ["CAMERA_ROLL"]
+    },
+
+Actualmente con el emulador se esta trabajando mediante el entorno de expo cuando compilemos la aplicación en el caso de Android tenemos que 
+pedir permisos a Android, añadir en app.json estos permisos.
+
+ "android" : {
+      "permissions" : ["CAMERA_ROLL","READ_EXTERNAL_STORAGE","WRITE_EXTERNAL_STORAGE"]
+    },
+
