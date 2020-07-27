@@ -15,6 +15,9 @@ import Loading from "../../components/Loading";
 //Import Components
 import InfoUser from "../../components/Account/InfoUser";
 
+//Import Account Options
+import AccountOptions from "../../components/Account/AccountOptions";
+
 import * as firebase from 'firebase';
 
 export default function UserLogged(){
@@ -30,7 +33,6 @@ export default function UserLogged(){
             const user = await firebase.auth().currentUser;
             //Actualizo el state del usuario
             setUserInfo(user);
-            console.log(userInfo);
          })();
 
     },[userInfo])
@@ -40,11 +42,10 @@ export default function UserLogged(){
             {userInfo && <InfoUser 
             userInfo={userInfo} 
             toastRef={toastRef}
-            updateAvatarUser={updateAvatarUser}
             setLoading={setIsVisibleLoading}
             setLoadingText={setTextLoading}
              />}
-            <Text>Opciones de Cuenta</Text>
+           <AccountOptions userInfo={userInfo} toastRef={toastRef}/>
             <Button onPress={removeSession} 
                     title="Cerrar Sessión" 
                     buttonStyle={styles.btnCloseSession}
@@ -56,14 +57,6 @@ export default function UserLogged(){
         </View>
     )
 }
-
-//Funcion actualizar avatar del usuario
-const updateAvatarUser = () => {
-    const ref = firebase.storage().ref(`avatar/${userInfo.uid}`)
-    const url = ref.getDownloadURL();
-    console.log(`La url del avatar es ${url}`);
-}
-
 
 const styles = StyleSheet.create({
 

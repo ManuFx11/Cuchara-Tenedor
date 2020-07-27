@@ -85,7 +85,7 @@ const uploadImageFirebase = async (uri,uid,setLoading,setLoadingText) => {
 
 //Funcion con la que actualizo photoURL del usuario
 const updatePhotoUrl = (uid,setLoading) => {
-    console.log(`El uid del usuario es ${uid}`);
+  
     firebase.storage().ref(`avatar/${uid}`).getDownloadURL()
     .then(async (response) => {
         const data = {
