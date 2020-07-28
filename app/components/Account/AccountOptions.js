@@ -8,32 +8,48 @@ import {map} from 'lodash';
 //Importo Modal
 import Modal from '../Modal';
 
+//Importamos componentes para gestionar las operaciones de cuenta del usuario
+import ChangeDisplayNameForm from "../Account/ChangeDisplayNameForm";
+
 
 export default function AccountOptions(props){
 
+    const {setLoadUserInfo} = props;
+
 
     const [isVisible, setIsVisible] = useState(false);
+    //Aqui guardamos el componente que se va a renderizar
     const [renderComponent, setRenderComponent] = useState(null);
     const {userInfo, toastRef} = props;
     
 
-    //Funcion para seleccionar componente que se encarga de cada tarea
+    //Funcion para seleccionar componente que se encarga de cada tarea en funcion del boton que pulse el usuario
     const selectedComponent = (key) => {
-        console.log(key);
         switch(key){
     
         case "displayName":
-            setRenderComponent(<Text>Cambiando nombre y apellidos</Text>)
+            setRenderComponent(<ChangeDisplayNameForm userInfo={userInfo} 
+                setIsVisible={setIsVisible} toastRef={toastRef} setLoadUserInfo={setLoadUserInfo} />)
+            setIsVisible(true);
         break;
     
         case "email":
             setRenderComponent(<Text>Cambiando email</Text>)
+            setIsVisible(true);
         break;
     
-        case "telefono":
+        case "password":
             setRenderComponent(<Text>Cambiando contraseña</Text>)
+            setIsVisible(true);
+            break;
+
+        case "phone":
+            setRenderComponent(<Text>Cambiando Telefono Movil</Text>)
+            setIsVisible(true);
+            break;
        
         default : setRenderComponent(null)
+                  setIsVisible(false);
             break;
         }
     }
@@ -69,6 +85,16 @@ export default function AccountOptions(props){
         iconNameRight:"chevron-right",
         iconColorRight:"#00a680",
         onPress: () => {selectedComponent("password")}
+    },
+    {
+        title: "Establecer número de teléfono",
+        subtitle: "Pulse aqui si desea establecer un teléfono",
+        iconType:"material-community",
+        iconNameLeft:"cellphone",
+        iconColorLeft:"#ccc",
+        iconNameRight:"chevron-right",
+        iconColorRight:"#00a680",
+        onPress: () => {selectedComponent("phone")}
     }
 ];
 }
@@ -96,11 +122,13 @@ export default function AccountOptions(props){
                 onPress={menu.onPress}
              />
          ))}
-         <Modal isVisible={isVisible} setIsVisible={setIsVisible}>  
-         <Text>
-                Hola Mundo
-            </Text>
-         </Modal>
+         
+         {renderComponent && (
+          <Modal isVisible={isVisible} setIsVisible={setIsVisible}>  
+              {renderComponent}
+          </Modal>
+         )}
+        
         </View>
     )
 }

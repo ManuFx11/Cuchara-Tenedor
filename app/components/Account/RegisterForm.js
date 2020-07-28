@@ -76,6 +76,7 @@ export default function RegisterForm(props){
       const onChange = (e, type) => {
         let value = e.nativeEvent.text;
         setFormData({ ...formData, [type]: value });
+        console.log(formData);
      };
 
 

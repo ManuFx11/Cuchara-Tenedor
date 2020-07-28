@@ -16,6 +16,7 @@ export default function InfoUser(props){
     toastRef, 
     setLoading, 
     setLoadingText} = props;
+    console.log(displayName);
 
     return(
         <View style={styles.viewUserInfo}>
@@ -31,7 +32,7 @@ export default function InfoUser(props){
             onPress = {() => changeAvatar(toastRef,uid,setLoading,setLoadingText)}
             />
             <View>
-                <Text style={styles.displayName}>{showName(displayName)}</Text>
+                <Text style={styles.displayName}>{displayName ? displayName : "Anónimo"}</Text>
                 <Text>{email ? email : "Logeado con Social Login"}</Text>
             </View>   
         </View>

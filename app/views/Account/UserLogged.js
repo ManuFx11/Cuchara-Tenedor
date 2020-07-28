@@ -27,6 +27,9 @@ export default function UserLogged(){
     const [isVisibleLoading, setIsVisibleLoading] = useState(false);
     const [textLoading, setTextLoading] = useState("");
 
+    //Creo un estado para controlar cuando quiero que se refresque, cada vez que lo pongo a true ejecutara el useEffect
+    const [loadUserInfo, setLoadUserInfo] = useState(false);
+
     useEffect(() => {
         //Funcion asincrona para consultar los valores del usuario
         (async () => {
@@ -34,8 +37,9 @@ export default function UserLogged(){
             //Actualizo el state del usuario
             setUserInfo(user);
          })();
+         setLoadUserInfo(false);
 
-    },[userInfo])
+    },[loadUserInfo])
 
     return(
         <View style={styles.viewUserInfo}>
@@ -45,7 +49,7 @@ export default function UserLogged(){
             setLoading={setIsVisibleLoading}
             setLoadingText={setTextLoading}
              />}
-           <AccountOptions userInfo={userInfo} toastRef={toastRef}/>
+           <AccountOptions userInfo={userInfo} toastRef={toastRef} setLoadUserInfo={setLoadUserInfo}/>
             <Button onPress={removeSession} 
                     title="Cerrar Sessión" 
                     buttonStyle={styles.btnCloseSession}
