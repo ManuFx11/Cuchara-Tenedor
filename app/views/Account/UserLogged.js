@@ -36,6 +36,7 @@ export default function UserLogged(){
             const user = await firebase.auth().currentUser;
             //Actualizo el state del usuario
             setUserInfo(user);
+            console.log(userInfo);
          })();
          setLoadUserInfo(false);
 

@@ -10,6 +10,7 @@ import Modal from '../Modal';
 
 //Importamos componentes para gestionar las operaciones de cuenta del usuario
 import ChangeDisplayNameForm from "../Account/ChangeDisplayNameForm";
+import ChangePhoneForm from "../Account/ChangePhoneForm";
 
 
 export default function AccountOptions(props){
@@ -44,7 +45,8 @@ export default function AccountOptions(props){
             break;
 
         case "phone":
-            setRenderComponent(<Text>Cambiando Telefono Movil</Text>)
+            setRenderComponent(<ChangePhoneForm userInfo={userInfo} 
+                setIsVisible={setIsVisible} setLoadUserInfo={setLoadUserInfo} />)
             setIsVisible(true);
             break;
        

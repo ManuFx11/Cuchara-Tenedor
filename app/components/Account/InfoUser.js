@@ -12,7 +12,7 @@ import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 
 export default function InfoUser(props){
-    const { userInfo : { uid, photoURL, displayName, email}, 
+    const { userInfo : { uid, photoURL, displayName, email, phoneNumber}, 
     toastRef, 
     setLoading, 
     setLoadingText} = props;
@@ -34,6 +34,7 @@ export default function InfoUser(props){
             <View>
                 <Text style={styles.displayName}>{displayName ? displayName : "Anónimo"}</Text>
                 <Text>{email ? email : "Logeado con Social Login"}</Text>
+                <Text>{phoneNumber ? phoneNumber : "Sin número establecido"}</Text>
             </View>   
         </View>
     )

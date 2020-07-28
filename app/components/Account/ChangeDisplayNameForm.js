@@ -40,6 +40,7 @@ export default function ChangeDisplayNameForm(props){
             setIsLoading(false);
             setIsVisible(false);
             setLoadUserInfo(true);
+      
          })
          .catch(error => {
              setError("Error al actualizar el nombre");
