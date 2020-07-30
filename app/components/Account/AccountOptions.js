@@ -10,7 +10,9 @@ import Modal from '../Modal';
 
 //Importamos componentes para gestionar las operaciones de cuenta del usuario
 import ChangeDisplayNameForm from "../Account/ChangeDisplayNameForm";
+import ChangeEmailForm from "./ChangeEmailForm";
 import ChangePhoneForm from "../Account/ChangePhoneForm";
+import ChangePasswordForm from "../Account/ChangePasswordForm";
 
 
 export default function AccountOptions(props){
@@ -35,12 +37,14 @@ export default function AccountOptions(props){
         break;
     
         case "email":
-            setRenderComponent(<Text>Cambiando email</Text>)
+            setRenderComponent(<ChangeEmailForm email={userInfo.email} 
+                setIsVisible={setIsVisible} setLoadUserInfo={setLoadUserInfo} toastRef={toastRef}/>)
             setIsVisible(true);
         break;
     
         case "password":
-            setRenderComponent(<Text>Cambiando contraseña</Text>)
+            setRenderComponent(<ChangePasswordForm password ={userInfo.password} 
+                setIsVisible={setIsVisible} setLoadUserInfo={setLoadUserInfo} toastRef={toastRef}/>)
             setIsVisible(true);
             break;
 

@@ -39,6 +39,7 @@ export default function ChangeDisplayNameForm(props){
             console.log("Ok, actualizado")
             setIsLoading(false);
             setIsVisible(false);
+            //Pongo a true esto para que el useEffect de UserLogged se ejecute y obtenga los valores actuales del usuario
             setLoadUserInfo(true);
       
          })
