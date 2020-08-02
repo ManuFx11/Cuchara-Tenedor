@@ -25,8 +25,6 @@ export default function ChangePasswordForm(props){
         console.log(data);
     }
 
-
-
     const updatePasswordFirebase = async () => {
         console.log("Actualizando firebase");
         let errorsTemp = {};

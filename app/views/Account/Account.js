@@ -21,6 +21,7 @@ export default function Account(){
     useEffect(() => {
 
         firebase.auth().onAuthStateChanged((user) => {
+            //Me duelve la información del usuario
             console.log(user);
             //Devuelve null o un objeto del usuario, hago comprobación y cambio estado
             !user ? setLogin(false) : setLogin(true);

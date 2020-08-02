@@ -81,7 +81,7 @@ export default function ChangeEmailForm(props){
 
     }
 
-    //VIEW
+        //VIEW
     return(
         <View style={styles.view}>
             <Text style={styles.titleForm}>Cambio de Email</Text>
@@ -126,8 +126,6 @@ export default function ChangeEmailForm(props){
              />
         </View>
     )
-
-
 }
 
 const dataForm = () => {
