@@ -1,6 +1,6 @@
 import React,{useState} from "react";
 import {StyleSheet, View, Text, ScrollView, Alert, Dimensions} from "react-native";
-import {Icon, Avatar, Imagen, Input, Button} from 'react-native-elements'
+import {Icon, Avatar, Image, Input, Button} from 'react-native-elements'
 import { onChange } from "react-native-reanimated";
 import {map, size, filter} from "lodash";
 
@@ -8,6 +8,10 @@ import {map, size, filter} from "lodash";
 import * as Permissions from 'expo-permissions';
 //Importo Selector Imagenes
 import * as ImagePicker from 'expo-image-picker';
+
+//Con el componente dimension lo que obtengo es el ancho de la pantalla del dispositivo
+const WidthScreen = Dimensions.get("window").width;
+console.log(`Ancho de la pantalla ${WidthScreen}`);
 
 export default function AddRestaurantForm(props){
 
@@ -17,6 +21,7 @@ export default function AddRestaurantForm(props){
     //STATE
     const [formData, setFormData] = useState({nombre : "", direccion : "", descripcion : ""})
     const [imageSelected, setImageSelected] = useState([])
+    const [imagePrincipal, setImagePrincipal] = useState(null);
 
     //FUNCIONES
     const addRestaurant = () => {
@@ -26,6 +31,7 @@ export default function AddRestaurantForm(props){
 
     return(
         <ScrollView style={styles.ScrollView}>
+            <ImagePrincipal imageSelected={imageSelected[0]}/>
             <FormAdd formData={formData} setFormData={setFormData}/>
             <UploadImage toastRef={toastRef} setImageSelected={setImageSelected} imageSelected={imageSelected}/>
             <Button title="Crear Restaurante" onPress={addRestaurant} buttonStyle={styles.btnAddRestaurant}/>
@@ -70,6 +76,19 @@ const FormAdd = (props) => {
     )
 }
 
+//Componente ImagenDestacada
+function ImagePrincipal(props){
+    const {imageSelected} = props;
+    return(
+        <View>
+            <Image
+                 source={imageSelected ? { uri: imageSelected } : require('../../../assets/img/no-image.png') }
+                 style={{ width: WidthScreen, height: 200 }}
+            />
+        </View>
+    )
+}
+
 //Componente UploadImage
 function UploadImage(props){
 
@@ -95,9 +114,8 @@ function UploadImage(props){
             }else{
                //Guardo en un estado las imagenes que vayan seleccionando el usuario
                let image = result.uri;
-               console.log(image);
-               setImageSelected([...imageSelected,image]);
-               console.log(imageSelected);
+                setImageSelected([...imageSelected,image]);
+               
             }
 
         }
@@ -127,6 +145,7 @@ function UploadImage(props){
             { cancelable : false}
         )
 
+        /*Probar esto y ver porque no salia
     /*  console.log(`Array antes de borrar ${imageSelected}`);
         let updateArray = imageSelected;
         updateArray.splice(key,1);

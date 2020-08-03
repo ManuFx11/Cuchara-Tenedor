@@ -53,3 +53,6 @@ pedir permisos a Android, añadir en app.json estos permisos.
       "permissions" : ["CAMERA_ROLL","READ_EXTERNAL_STORAGE","WRITE_EXTERNAL_STORAGE"]
     },
 
+Obtener la anchura de la pantall
+importamos el paquete Dimensions de React Native
+const WidthScreen = Dimensions.get("window").width;
