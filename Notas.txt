@@ -56,3 +56,11 @@ pedir permisos a Android, añadir en app.json estos permisos.
 Obtener la anchura de la pantall
 importamos el paquete Dimensions de React Native
 const WidthScreen = Dimensions.get("window").width;
+
+Uso de Geolocalización en expo
+
+1) React Native Maps para poder mostrar un mapa en nuestra aplicación
+yarn add react-native-maps  tb disponible para descargar con expo.
+2) Expo Location
+
+En Android hay que configurar la API key del mapa porque si no no va a funcionar.

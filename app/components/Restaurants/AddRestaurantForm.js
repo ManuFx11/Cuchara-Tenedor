@@ -1,17 +1,26 @@
-import React,{useState} from "react";
+import React,{useState, useEffect} from "react";
 import {StyleSheet, View, Text, ScrollView, Alert, Dimensions} from "react-native";
 import {Icon, Avatar, Image, Input, Button} from 'react-native-elements'
 import { onChange } from "react-native-reanimated";
 import {map, size, filter} from "lodash";
+import Modal from '../Modal';
 
 //Importo Permisos para la camara
 import * as Permissions from 'expo-permissions';
 //Importo Selector Imagenes
 import * as ImagePicker from 'expo-image-picker';
+//Importo Expo Location
+import * as Location from 'expo-location';
+//Importo Mapa
+import MapView from 'react-native-maps';
 
 //Con el componente dimension lo que obtengo es el ancho de la pantalla del dispositivo
 const WidthScreen = Dimensions.get("window").width;
+
+
+
 console.log(`Ancho de la pantalla ${WidthScreen}`);
+
 
 export default function AddRestaurantForm(props){
 
@@ -22,22 +31,106 @@ export default function AddRestaurantForm(props){
     const [formData, setFormData] = useState({nombre : "", direccion : "", descripcion : ""})
     const [imageSelected, setImageSelected] = useState([])
     const [imagePrincipal, setImagePrincipal] = useState(null);
-
+    const [isVisibleMap, setIsVisibleMap] = useState(false);
+    const [locationRestaurant, setLocationRestaurant] = useState(null);
+    
     //FUNCIONES
     const addRestaurant = () => {
         console.log("Guardando restaurante");
         console.log(formData);
+        console.log(locationRestaurant);
     }
 
     return(
         <ScrollView style={styles.ScrollView}>
             <ImagePrincipal imageSelected={imageSelected[0]}/>
-            <FormAdd formData={formData} setFormData={setFormData}/>
-            <UploadImage toastRef={toastRef} setImageSelected={setImageSelected} imageSelected={imageSelected}/>
+            <FormAdd setIsVisibleMap={setIsVisibleMap} formData={formData} setFormData={setFormData}/>
+            <UploadImage setIsVisibleMap={setIsVisibleMap} toastRef={toastRef} setImageSelected={setImageSelected} imageSelected={imageSelected}/>
             <Button title="Crear Restaurante" onPress={addRestaurant} buttonStyle={styles.btnAddRestaurant}/>
+            <Map isVisibleMap={isVisibleMap} toastRef={toastRef} setIsVisibleMap={setIsVisibleMap} setLocationRestaurant={setLocationRestaurant}/>
         </ScrollView>
     )
 }
+
+//Componente que se encargara de controlar el mapa
+function Map(props){
+
+     const {isVisibleMap, setIsVisibleMap, toastRef, setLocationRestaurant} = props;
+
+     //STATE
+     const [location, setLocation] = useState(null);
+
+    useEffect(() => {
+       
+        //Funcion anonima asincrona autoejecutable
+        (async () => {
+            //Pregunto los permisos, añadir en app.json los permisos tanto para expo y para android para que funcione cuando compilemos
+            const resultPermissions = await Permissions.askAsync(Permissions.LOCATION);
+            
+            const statusPermissions = resultPermissions.permissions.location.status;
+            if(statusPermissions!=="granted"){
+                toastRef.current.show("Debes aceptar los permisos de la localización",3000);
+            }else{
+                //Obtengo la localización
+                const localizacion = await Location.getCurrentPositionAsync({});
+
+                console.log(localizacion);
+                //Creo un array que guardo en el estado con estas propiedades ya que le serviran para el mapa de Google.
+                setLocation({
+                    latitude : localizacion.coords.latitude,
+                    longitude : localizacion.coords.longitude,
+                    latitudeDelta: 0.001,
+                    longitudeDelta : 0.001
+                })
+            }
+        })()
+    },[])
+
+    const confirmLocation = () => {
+        setLocationRestaurant(location);   
+        setIsVisibleMap(false);
+        toastRef.current.show("Localización guardada conrrectamente");
+    }
+
+     return(
+         <Modal isVisible={isVisibleMap} setIsVisible={setIsVisibleMap}>
+            <View>
+                {location && (
+                 <MapView
+                 initialRegion={location}
+                 style={styles.mapStyle}
+                 showsUserLocation={true}
+                 //Si arrastro el mapa y lo muevo me llevo actualizo la localización al nuevo punto
+                 onRegionChange={(region) => setLocation(region)}
+                 >
+                  <MapView.Marker
+                    coordinate={{
+                        latitude : location.latitude,
+                        longitude : location.longitude
+                    }}
+                    draggable
+                />
+
+
+                 </MapView>
+                )}
+                <View style={styles.viewMapBtn}>
+                    <Button title="Guardar Localización" 
+                    buttonStyle={styles.viewOkBtnStyle}
+                    onPress={() => confirmLocation()}
+                    />
+                    <Button title="Cerrar Mapa" 
+                    containerStyle={styles.viewCancelBtn}
+                    buttonStyle={styles.viewCancelBtnStyle}
+                    onPress={() => setIsVisibleMap(false)} 
+                     />
+                </View>
+           
+            </View>
+         </Modal>  
+     )
+}
+
 
 
 //Componente Formulario que obtiene los 3 datos del restaurante y guarda en el estado
@@ -45,6 +138,7 @@ const FormAdd = (props) => {
 
     //PROPS 
     const {formData, setFormData} = props;
+    const {setIsVisibleMap} = props;
 
     //EVENTOS
     const onChange = (e,type) => {
@@ -63,6 +157,12 @@ const FormAdd = (props) => {
                 placeholder="Dirección del Restaurante"
                 containerStyle={styles.input}
                 onChange={(e) => onChange(e,"direccion")}
+                rightIcon={{
+                    type: "material-community",
+                    name:"google-maps",
+                    color:"#c2c2c2",
+                    onPress: () => setIsVisibleMap(true)
+                }}
             />
              <Input
                 placeholder="Descripción del Restaurante"
@@ -220,5 +320,23 @@ const styles = StyleSheet.create({
         width:70,
         height:70,
         marginRight:10
+    },
+    mapStyle : {
+        width: "100%",
+        height: 550
+    },
+    viewMapBtn : {
+        flexDirection: "row",
+        justifyContent: "center",
+        marginTop : 10
+    },
+    viewCancelBtn: {
+        marginLeft: 10,  
+    },
+    viewCancelBtnStyle : {
+        backgroundColor: "#a60b0d",
+    },
+    viewOkBtnStyle : {
+        backgroundColor : "#00a680"
     }
 })
