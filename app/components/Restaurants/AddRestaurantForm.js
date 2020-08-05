@@ -19,11 +19,11 @@ import {firebaseApp} from '../../utils/firebase';
 import firebase from "firebase/app";
 import "firebase/storage";
 
+//Import Random id
+import uuid from "random-uuid-v4";
 
 //Con el componente dimension lo que obtengo es el ancho de la pantalla del dispositivo
 const WidthScreen = Dimensions.get("window").width;
-
-
 
 console.log(`Ancho de la pantalla ${WidthScreen}`);
 
@@ -54,7 +54,14 @@ export default function AddRestaurantForm(props){
             toastRef.current.show("Tiene que ubicar el restaurante");
         }else{
             console.log("Ok");
-            uploadImageFirebase();
+            setIsLoading(true);
+            uploadImageFirebase().then(response => {
+                //Obtendre el array con las rutas de las imagenes.
+                console.log(response);
+                setIsLoading(false);
+                console.log("Todo Correcto");
+                navigation.navigate('restaurants');
+            })
         }
     }
 
@@ -63,22 +70,34 @@ export default function AddRestaurantForm(props){
     //Va a devolver una promesa al ser una function asincrona
     const uploadImageFirebase = async () => {
         
-        const imageBlog = [];
-     
-        //Recorro las imagenes que el usuario ha subido.
-        map(imageSelected, async (image) => {
-            await fetch(image).then(async (response) => {
-               //Para subir una imagen a storage necesitamos el blob
-                const blob = await response.blob();
+        const imageBlob = [];
 
-                const ref = firebase.storage().ref("/restaurants").child();
+        //Genero una promesa y le digo que se espera a resolver esto antes de hacer el return
+        await Promise.all(
+            //Recorro las imagenes que el usuario ha subido.
+            map(imageSelected, async (image) => {
+            const peticion = await fetch(image);
+           //Para subir una imagen a storage necesitamos el blob
+            const blob = await peticion.blob();
+            //Genero una id con la libreria
+            const name = uuid();
+            const ref = firebase.storage().ref("restaurants").child(name);
 
-
-            }).catch(error => {
-                console.log("Hubo un error");
+            //Subo la imagen al servidor
+            await ref.put(blob).then(async (response) => {
+                //Cuando sea correcta la subida obtengo la url que me da firebase
+                await firebase.storage().ref(`restaurants/${response.metadata.name}`)
+                .getDownloadURL()
+                .then((response) => {
+                    imageBlob.push(response);
+                }).catch((error) => {
+                    console.log("Hubo un error al dar la url");
+                })
             })
-
-        });
+            })
+        );
+     
+        return imageBlob;
     }
 
     return(
@@ -100,6 +119,7 @@ function Map(props){
      //STATE
      const [location, setLocation] = useState(null);
 
+     //Nada más se ejecute este componente se auto ejecuta el uso efect
     useEffect(() => {
        
         //Funcion anonima asincrona autoejecutable
@@ -150,8 +170,6 @@ function Map(props){
                     }}
                     draggable
                 />
-
-
                  </MapView>
                 )}
                 <View style={styles.viewMapBtn}>
@@ -164,8 +182,7 @@ function Map(props){
                     buttonStyle={styles.viewCancelBtnStyle}
                     onPress={() => setIsVisibleMap(false)} 
                      />
-                </View>
-           
+                </View>  
             </View>
          </Modal>  
      )
