@@ -64,3 +64,11 @@ yarn add react-native-maps  tb disponible para descargar con expo.
 2) Expo Location
 
 En Android hay que configurar la API key del mapa porque si no no va a funcionar.
+
+Funciones async devuelve una promesa son funciones que especificamos que sea asi porque necesitamos que terminen antes de seguir ejecutando código.
+
+Libreria para generar id unicos
+
+1) uuid pero da algun problema con react native
+2) random-uuid-v4
+

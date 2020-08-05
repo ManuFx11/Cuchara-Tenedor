@@ -13,6 +13,12 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 //Importo Mapa
 import MapView from 'react-native-maps';
+//Importo Firebase Configuracion
+import {firebaseApp} from '../../utils/firebase';
+//Importo Firebase
+import firebase from "firebase/app";
+import "firebase/storage";
+
 
 //Con el componente dimension lo que obtengo es el ancho de la pantalla del dispositivo
 const WidthScreen = Dimensions.get("window").width;
@@ -39,12 +45,46 @@ export default function AddRestaurantForm(props){
         console.log("Guardando restaurante");
         console.log(formData);
         console.log(locationRestaurant);
+        //Realizo comprobaciones
+        if(!formData.nombre || !formData.direccion || !formData.descripcion){
+            toastRef.current.show("Debe rellenar todos los campos");
+        }else if(size(imageSelected) === 0){
+            toastRef.current.show("El restaurante tiene que tener al menos 1 imagen")
+        }else if(!locationRestaurant){
+            toastRef.current.show("Tiene que ubicar el restaurante");
+        }else{
+            console.log("Ok");
+            uploadImageFirebase();
+        }
+    }
+
+   
+    //Funcion que se encargara de subir las imagenes a firebase
+    //Va a devolver una promesa al ser una function asincrona
+    const uploadImageFirebase = async () => {
+        
+        const imageBlog = [];
+     
+        //Recorro las imagenes que el usuario ha subido.
+        map(imageSelected, async (image) => {
+            await fetch(image).then(async (response) => {
+               //Para subir una imagen a storage necesitamos el blob
+                const blob = await response.blob();
+
+                const ref = firebase.storage().ref("/restaurants").child();
+
+
+            }).catch(error => {
+                console.log("Hubo un error");
+            })
+
+        });
     }
 
     return(
         <ScrollView style={styles.ScrollView}>
             <ImagePrincipal imageSelected={imageSelected[0]}/>
-            <FormAdd setIsVisibleMap={setIsVisibleMap} formData={formData} setFormData={setFormData}/>
+            <FormAdd setIsVisibleMap={setIsVisibleMap} formData={formData} setFormData={setFormData} locationRestaurant={locationRestaurant}/>
             <UploadImage setIsVisibleMap={setIsVisibleMap} toastRef={toastRef} setImageSelected={setImageSelected} imageSelected={imageSelected}/>
             <Button title="Crear Restaurante" onPress={addRestaurant} buttonStyle={styles.btnAddRestaurant}/>
             <Map isVisibleMap={isVisibleMap} toastRef={toastRef} setIsVisibleMap={setIsVisibleMap} setLocationRestaurant={setLocationRestaurant}/>
@@ -138,7 +178,7 @@ const FormAdd = (props) => {
 
     //PROPS 
     const {formData, setFormData} = props;
-    const {setIsVisibleMap} = props;
+    const {setIsVisibleMap, locationRestaurant} = props;
 
     //EVENTOS
     const onChange = (e,type) => {
@@ -160,7 +200,7 @@ const FormAdd = (props) => {
                 rightIcon={{
                     type: "material-community",
                     name:"google-maps",
-                    color:"#c2c2c2",
+                    color: !locationRestaurant ? "#c2c2c2" : "#00a680",
                     onPress: () => setIsVisibleMap(true)
                 }}
             />
