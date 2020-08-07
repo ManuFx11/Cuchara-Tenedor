@@ -19,13 +19,19 @@ import {firebaseApp} from '../../utils/firebase';
 import firebase from "firebase/app";
 import "firebase/storage";
 
+
+//Importo la base de datos de Firebase
+import "firebase/firestore";
+
 //Import Random id
 import uuid from "random-uuid-v4";
 
 //Con el componente dimension lo que obtengo es el ancho de la pantalla del dispositivo
 const WidthScreen = Dimensions.get("window").width;
 
-console.log(`Ancho de la pantalla ${WidthScreen}`);
+//Creo la conexión con base de datos y le paso el archivo de configuración
+
+const DB = firebase.firestore(firebaseApp);
 
 
 export default function AddRestaurantForm(props){
@@ -58,9 +64,31 @@ export default function AddRestaurantForm(props){
             uploadImageFirebase().then(response => {
                 //Obtendre el array con las rutas de las imagenes.
                 console.log(response);
-                setIsLoading(false);
-                console.log("Todo Correcto");
-                navigation.navigate('restaurants');
+                //Conecto con la base de datos 
+                //1 Coleccion y luego añado el registro
+                DB.collection("restaurants")
+                .add({
+                     name: formData.nombre,
+                     adress: formData.direccion,
+                     description: formData.descripcion,
+                     location : locationRestaurant,
+                     images : response,
+                     rating : 0,
+                     ratingTotal : 0,
+                     quantityVoting: 0,
+                     createAt: new Date(),
+                     createBy: firebase.auth().currentUser.uid
+                }).then(response => {
+                    console.log("OK TODO CORRECTO")
+                    setIsLoading(false);
+                     //Redirijo al usuario a la pantalla de restaurantes
+                     navigation.navigate('restaurants');
+
+                }).catch(error => {
+                    console.log("FALLO AL SUBIR");
+                    setIsLoading(false);
+                    toastRef.current.show("Error al subir restaurante")
+                })           
             })
         }
     }

@@ -72,3 +72,9 @@ Libreria para generar id unicos
 1) uuid pero da algun problema con react native
 2) random-uuid-v4
 
+Para compilar la aplicación y obtener el apk : expo:build android y seleccionamos apk.
+Es posible que en android nos de fallos con los mapas ya que google en desarrollo nos deja usar sus mapas pero en producción no.
+Tenemos que ponerle la API de Google Maps para Android
+Pasos a seguir: https://docs.expo.io/versions/latest/sdk/map-view/
+
+API KEY: AIzaSyA1H-dTJ4O7AcM2TGqPqdpap_5KjiCgRJQ
