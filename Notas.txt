@@ -78,3 +78,7 @@ Tenemos que ponerle la API de Google Maps para Android
 Pasos a seguir: https://docs.expo.io/versions/latest/sdk/map-view/
 
 API KEY: AIzaSyA1H-dTJ4O7AcM2TGqPqdpap_5KjiCgRJQ
+
+UseFocusEffect de la libreeria React Navigation para crealizar peticiones cada vez qeu se accede a una screen.
+
+rnfs: Genera una clase

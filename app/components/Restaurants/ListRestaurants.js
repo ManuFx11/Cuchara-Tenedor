@@ -3,20 +3,26 @@ import React from 'react'
 import { StyleSheet, Text, View, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native'
 import {Image} from 'react-native-elements';
 import {size} from 'lodash';
+import {useNavigation} from '@react-navigation/native';
 
 export default function ListRestaurants(props) {
 
+    const navigation = useNavigation();
+
     //PROPS
-    const {restaurants} = props;
+    const {restaurants, handleLoadMore, isLoading, setIsLoading} = props;
   
     return (
         <View>
             {size(restaurants) > 0 ? (
                 <FlatList 
                     data = {restaurants}
-                    renderItem = {(restaurant) => <Restaurant restaurant={restaurant}/>}
+                    renderItem = {(restaurant) => <Restaurant navigation={navigation} restaurant={restaurant}/>}
                     keyExtractor = {(item, index) => index.toString()}
-                />
+                    onEndReachedThreshold={0.5}
+                    onEndReached={handleLoadMore}
+                    ListFooterComponent={<FooterList isLoading={isLoading}/>}
+                    />
             ) : (
                 <View style={styles.loaderRestaurants}>
                     <ActivityIndicator size="large"/>
@@ -27,16 +33,37 @@ export default function ListRestaurants(props) {
     )
 }
 
+//Componente que mostrara el mensaje de Cargando 
+function FooterList(props){
+
+    const {isLoading} = props;
+
+    if(isLoading){
+        return(
+            <View style={styles.loaderRestaurants}>
+                <ActivityIndicator size="large"/>
+            </View>
+        )
+    }else{
+        return(
+            <View style={styles.notFoundRestaurants}>
+                <Text> No quedan restaurantes por cargar</Text>
+            </View>
+        )
+    }
+}
+
 //Componente Item de Restaurante
 function Restaurant(props){
     
-    const {restaurant} = props; 
-    const {images, name, adress, description} = restaurant.item;
+    const {restaurant, navigation} = props; 
+    const {id,images, name, adress, description} = restaurant.item;
     
     const imagePrincipal = images[0];
 
     const goRestaurant = () => {
-        console.log("OK!!");
+        //Pasamos estos atributos para recuperarlos en la screen de restaurant
+        navigation.navigate("restaurant", {id, name});
     }
    
     
@@ -96,6 +123,11 @@ const styles = StyleSheet.create({
         paddingTop:2,
         color:"grey",
         width:300
+    },
+    notFoundRestaurants : {
+        marginTop:10,
+        marginBottom:20,
+        alignItems:"center"
     }
 
 })
