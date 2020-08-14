@@ -12,7 +12,7 @@ export default function CarouselImages(props) {
         return(
             <Image
                 style={{width,height}}
-                source={ {uri : item} }
+                source={{uri : item}}
             />
         )
     }
