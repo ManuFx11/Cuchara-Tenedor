@@ -82,3 +82,6 @@ API KEY: AIzaSyA1H-dTJ4O7AcM2TGqPqdpap_5KjiCgRJQ
 UseFocusEffect de la libreeria React Navigation para crealizar peticiones cada vez qeu se accede a una screen.
 
 rnfs: Genera una clase
+
+Para poder lanzar el gps al presionar sobre el mapa tenemos que instalar un paquete denominado: react-native-open-maps
+

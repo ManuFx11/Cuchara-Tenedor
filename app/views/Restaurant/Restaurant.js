@@ -4,7 +4,10 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import Loading from '../../components/Loading';
 import CarouselImages from "../../components/Carousel";
 import Map from "../../components/Map";
+import ListReviews from "../../components/Restaurants/ListReviews";
 import {Rating} from 'react-native-ratings';
+import {map} from "lodash";
+import {ListItem, Icon} from 'react-native-elements';
 
 //Importo Configuración de Firebase
 import {firebaseApp} from "firebase/app";
@@ -35,22 +38,30 @@ export default function Restaurant(props) {
     const [rating, setRating] = useState(0);
 
    //USEEFFECT
-   useEffect(() => {
-
-    DB.collection("restaurants")
-    .doc(id)
-    .get()
-    .then((response) => {
-        const value = response.data();
-        console.log(value);
-        setRestaurant(value);
-        setRating(value.rating);
-        setIsVisible(false);
-    }).catch((error) => {
-        console.log(`Ha ocurrido el siguiente error ${error}`);
-    })
-  
-   }, [])
+   useFocusEffect(
+     useCallback(() => {
+        let isSubscribed = true;
+        DB.collection("restaurants")
+        .doc(id)
+        .get()
+        .then((response) => {
+            if(isSubscribed){
+            const value = response.data();
+        
+            setRestaurant(value);
+            setRating(value.rating);
+            setIsVisible(false);
+            }
+        }).catch((error) => {
+            if(isSubscribed){
+            console.log(`Ha ocurrido el siguiente error ${error}`);
+        }
+        })
+        return () => (isSubscribed = false);
+    
+    },[])
+   );
+   
 
     return (
         <ScrollView vertical style={styles.viewBody}>
@@ -66,8 +77,14 @@ export default function Restaurant(props) {
             />
             <RestaurantInfo
              name={restaurant.name}
-             address={restaurant.adress}
+             adress={restaurant.adress}
              location={restaurant.location}
+            />
+
+            <ListReviews
+                navigation={navigation}
+                idRestaurant={id}
+                setRating={setRating}          
             />
            
             <Loading isVisible={isVisible} text="Cargando Restaurante"/>
@@ -101,44 +118,55 @@ function TitleRestaurant(props){
 
 //Componente para mostrarr la info y el mapa
 function RestaurantInfo(props){
-    const {location, name, address} = props;
+    const {location, name, adress} = props;
+
+    const listInfo = [
+        {
+            text: adress,
+            iconName: "map-marker",
+            iconType: "material-community",
+            action: null
+     }, {
+        text: "954 475 748",
+        iconName: "phone",
+        iconType: "material-community",
+        action: null
+        },
+        {
+            text: "manu9lin@gmail.com",
+            iconName: "at",
+            iconType: "material-community",
+            action: null
+        }
+     ]
 
     return(
         <View style={styles.viewRestaurantInfo}>
             <Text style={styles.restaurantInfoTitle}>
-                Información sobre Restaurante
+               Información sobre el restaurante
             </Text>
             <Map
                 location={location}
                 name={name}
-                height={200}
+                height={150}
             />
+            {map(listInfo,(item,index) => (
+                <ListItem
+                    key={index}
+                    title={item.text}
+                    leftIcon={{
+                        name: item.iconName,
+                        type: item.iconType,
+                        color: "#00A680"
+                    }}
+                    containerStyle={styles.containerStyle}
+                />
+            ))}
         </View>
     )
 
 }
 
-/* //Componente para Mapa Localización
-function MapRestaurant(props){
-    const {location} = props;
-    
-
-    return(
-        <MapView
-                 initialRegion={location}
-                 style={styles.mapStyle}
-                 showsUserLocation={true}
-                 >
-                <MapView.Marker
-                    coordinate={{
-                        latitude : location.latitude,
-                        longitude : location.longitude
-                    }}
-                    draggable
-                />
-        </MapView>
-    )
-} */
 
 const styles = StyleSheet.create({
     viewBody : {
@@ -168,4 +196,17 @@ const styles = StyleSheet.create({
         width: "100%",
         height: 550
     },
+    viewRestaurantInfo : {
+        margin:5
+    },
+    restaurantInfoTitle : {
+        fontWeight:"bold",
+        marginBottom:20,
+        marginLeft:15,
+        fontSize:19
+    },
+    containerStyle : {
+        borderBottomColor: "#d8d8d8",
+        borderBottomWidth:1
+    }
 })

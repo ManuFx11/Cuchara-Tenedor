@@ -14,7 +14,6 @@ const DB = firebase.firestore(firebaseApp);
 import {useNavigation} from '@react-navigation/native';
  //Importo useFocusEffect, permite realizar algo cada vez que se entre a la pantalla
  import {useFocusEffect} from '@react-navigation/native';
-
 //Importo Componente
 import ListRestaurants from '../../components/Restaurants/ListRestaurants'; 
 
@@ -85,7 +84,9 @@ export default function Restaurants(){
          //Guardo el array de restaurantes obtenidos
          setRestaurants(resultsRestaurants);
     
-       })
+       }).catch((error => {
+         console.log("Ha ocurrido un error");
+       }))
     },[])
    )
 
@@ -114,6 +115,8 @@ export default function Restaurants(){
         });
 
         setRestaurants([...restaurants, ...resultRestaurants]);
+      }).catch((error) => {
+        console.log("Ha ocurrido un error");
       });
   };
  
