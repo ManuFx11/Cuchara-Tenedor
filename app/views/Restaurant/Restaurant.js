@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react'
+import React, {useState, useEffect, useCallback, useRef} from 'react'
 import { StyleSheet, Text, View, ScrollView, Dimensions, AsyncStorage } from 'react-native'
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import Loading from '../../components/Loading';
@@ -8,6 +8,7 @@ import ListReviews from "../../components/Restaurants/ListReviews";
 import {Rating} from 'react-native-ratings';
 import {map} from "lodash";
 import {ListItem, Icon} from 'react-native-elements';
+import Toast from "react-native-easy-toast";
 
 //Importo Configuración de Firebase
 import {firebaseApp} from "firebase/app";
@@ -27,6 +28,7 @@ export default function Restaurant(props) {
 
     const {navigation, route} = props;
     const {id, name} = route.params;
+    const toastRef = useRef();
     //Establezco el titulo de la página
     navigation.setOptions({
         title : name
@@ -36,35 +38,113 @@ export default function Restaurant(props) {
     const [restaurant, setRestaurant] = useState({});
     const [isVisible, setIsVisible] = useState(true);
     const [rating, setRating] = useState(0);
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [userLogged, setUserLogged] = useState(false);
+
+   //Para comprobar si el usuario esta logeado ejecutamos firebase.auth
+   firebase.auth().onAuthStateChanged((user) => {
+      //Devuelve user si esta logeado sino null
+      user ? setUserLogged(user) : setUserLogged(false)
+   })
+
 
    //USEEFFECT
    useFocusEffect(
      useCallback(() => {
-        let isSubscribed = true;
         DB.collection("restaurants")
         .doc(id)
         .get()
-        .then((response) => {
-            if(isSubscribed){
-            const value = response.data();
-        
+        .then((response) => {      
+            const value = response.data();      
             setRestaurant(value);
             setRating(value.rating);
-            setIsVisible(false);
-            }
-        }).catch((error) => {
-            if(isSubscribed){
+            setIsVisible(false);            
+        }).catch((error) => { 
             console.log(`Ha ocurrido el siguiente error ${error}`);
-        }
         })
-        return () => (isSubscribed = false);
-    
     },[])
    );
+
+   useEffect(() => {
+      if(userLogged && restaurant){
+          
+        DB.collection("favorites")
+        .where("idRestaurant", "==", id)
+        .where("idUser","==", firebase.auth().currentUser.uid)
+        .get()
+        .then((data) => {
+           // console.log(data.docs.length);
+           if(data.docs.length === 1){
+               setIsFavorite(true);
+           }
+        })
+      }
+   }, [userLogged, restaurant])
+
+
+   //Función añadir
+   const addFavorite = () => {
+       if(!userLogged){
+           toastRef.current.show("Para añadir a favoritos tienes que estar logeado");
+       }else{
+           const datosAGuardar = {
+               idUser : firebase.auth().currentUser.uid,
+               idRestaurant: id
+           };
+
+           //Guardo en firebase
+           DB.collection("favorites")
+           .add(datosAGuardar)
+           .then(() => {
+               setIsFavorite(true);
+               toastRef.current.show("Restaurante Añadido a Favoritos")
+           }).catch((error) => {
+               toastRef.current.show("Error al añadir restaurane a favoritos");
+           });
+
+
+       }
+   }
+
+   //Funcion borrar de favorito
+   const removeFavorite = () => {
+      //Borro favorito
+      DB.collection("favorites")
+      .where("idRestaurant","==",id)
+      .where("idUser","==",firebase.auth().currentUser.uid)
+      .get()
+      .then((data) => {
+          data.forEach((doc) => {
+              //Obtengo el id a borrar
+              const idFavorite = doc.id;
+              DB.collection("favorites")
+              .doc(idFavorite)
+              .delete()
+              .then(() => {
+                  setIsFavorite(false);
+                  toastRef.current.show("Restaurante Eliminado de tus Favoritos");
+              }).catch(() => {
+                  toastRef.current.show("Error al eliminar el restaurante de tus Favoritos");
+              })
+          })
+      })
+   }
    
 
     return (
         <ScrollView vertical style={styles.viewBody}>
+
+         <View style={styles.viewFavorite}>
+            <Icon
+                type="material-community"
+                name={isFavorite ? "heart" : "heart-outline"}
+                onPress={() => isFavorite  ? removeFavorite() : addFavorite()}
+                color={isFavorite ? "#f00" : "#000"}
+                size={35}
+                underlayColor="transparent"
+            />
+         </View>
+
           <CarouselImages
                  arrayImages={restaurant.images}
                  height={250}
@@ -88,7 +168,9 @@ export default function Restaurant(props) {
             />
            
             <Loading isVisible={isVisible} text="Cargando Restaurante"/>
-        </ScrollView>     
+            <Toast ref={toastRef} position="center" opacity={0.9}/>
+        </ScrollView>   
+          
     )
 }
 
@@ -208,5 +290,16 @@ const styles = StyleSheet.create({
     containerStyle : {
         borderBottomColor: "#d8d8d8",
         borderBottomWidth:1
+    },
+    viewFavorite : {
+        position:"absolute",
+        zIndex:2,
+        top:0,
+        right:0,
+        backgroundColor:"white",
+        borderBottomLeftRadius:100,
+        padding:5,
+        paddingLeft:15
+     
     }
 })

@@ -21,8 +21,7 @@ export default function ListReviews(props){
     //STATE
     const [userLogged, setUserLogged] = useState(false);
     const [reviews, setReviews] = useState([]);
-    console.log("Imprimiendo Review");
-    console.log(reviews);
+   
 
 
     firebase.auth().onAuthStateChanged((user) => {

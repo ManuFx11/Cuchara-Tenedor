@@ -76,6 +76,7 @@ export default function AddReviewRestaurant(props){
             const quantityVoting = restaurantData.quantityVoting + 1;
             const ratingResult = ratingTotal / quantityVoting;
 
+            //Actualizo el restaurante
             restaurantRef.update({
                 rating: ratingResult,
                 ratingTotal,

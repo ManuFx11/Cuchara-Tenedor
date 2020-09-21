@@ -62,8 +62,10 @@ function Restaurant(props){
     const imagePrincipal = images[0];
 
     const goRestaurant = () => {
+        //console.log(`click al restaurante con id ${id} y con ${name}`);
         //Pasamos estos atributos para recuperarlos en la screen de restaurant
-        navigation.navigate("restaurant", {id, name});
+       //navigation.navigate("restaurants", {screen : "restaurant", params : {id,name}})
+       navigation.navigate("restaurant",{id,name});
     }
    
     
